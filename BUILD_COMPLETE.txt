@@ -1,0 +1,40 @@
+FRUTAL FAST FRUIT - BUILD 1.0 MVP
+Fecha: 2026-09-23 (America/Lima)
+
+VERIFICADO EN ESTE BUILD
+[x] npm run build ............ sin errores (43 rutas)
+[x] npm run lint ............. 0 warnings
+[x] tsc --noEmit (strict) .... sin errores
+[x] npm run test:db .......... 68/68 pruebas OK. Migraciones 001-005 sobre Postgres
+                               con emulación de Supabase (roles anon/authenticated/
+                               service_role, auth.uid(), GRANTs por defecto)
+    - anon no lee ni escribe ninguna tabla; solo get_public_survey / submit_survey
+    - submit_survey rechaza opciones, escalas, preguntas y encuestas inválidas
+    - escalamiento inmediato con 3 respuestas críticas en 7 días (no con 2)
+    - notifica a gerente del local + HQ; no a otras empresas ni a otras sucursales
+    - Owner/GG ven toda su empresa; Gerente Local/Operativo solo sus sucursales
+    - otra empresa no ve nada de Frutal
+    - un usuario NO puede cambiar su role_id, company_id ni is_active
+    - nadie autenticado puede borrar alertas ni sucursales
+    - usuario desactivado pierde todo acceso
+    - dashboard_metrics respeta RLS
+    - la cola de emails no entrega dos veces el mismo correo
+[x] Servidor de producción levantado localmente:
+    - /login, /accept-invitation y /s/<slug> se ven bien en escritorio y móvil
+    - rutas privadas redirigen a /login; las APIs privadas responden 401
+    - /api/notifications/send sin secreto responde 401
+
+PENDIENTE (requiere tus credenciales; ver SETUP.md)
+[ ] Crear proyecto Supabase nuevo y ejecutar migraciones 001-005
+[ ] Desactivar el registro público en Supabase Auth (manual en el panel)
+[ ] npm run create-owner
+[ ] Flujo real invitar -> aceptar -> ingresar contra Supabase
+[ ] Dominio verificado en Resend + EMAIL_FROM
+[ ] Deploy en Vercel + dominio propio
+
+NO VERIFICADO
+- Las pantallas con datos (dashboards, encuestas, alertas, usuarios) compilan,
+  pero no se probaron contra un Supabase real.
+- UI "idéntica a Rocket": el repositorio de GitHub estaba vacío, así que no hubo
+  diseño de referencia. La UI se diseñó desde cero con la paleta Frutal
+  (verde #2E7D32, blanco, acento naranja).
