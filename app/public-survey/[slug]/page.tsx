@@ -9,14 +9,14 @@ import type { PublicSurvey } from '@/types/database';
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = { title: 'Encuesta', robots: { index: false, follow: false } };
 
-type Props = { params: { slug: string }; searchParams: { e?: string; mesa?: string; src?: string } };
+type Props = { params: { slug: string }; searchParams: { e?: string; mesa?: string; table?: string; src?: string } };
 
-// Encuesta pública dinámica: /s/<slug-sucursal>?e=<encuesta>&mesa=<n>
+// Encuesta pública dinámica: /s/<slug-sucursal>?e=<encuesta>&mesa=<n>  (?table=<n> también vale)
 // Si el QR no indica encuesta (o no es válida), usa la predeterminada de la sucursal.
 export default async function PublicSurveyPage({ params, searchParams }: Props) {
   const slug = params.slug.toLowerCase().slice(0, 60);
   const surveyId = z.string().uuid().safeParse(searchParams.e).success ? searchParams.e! : null;
-  const mesa = Number(searchParams.mesa);
+  const mesa = Number(searchParams.mesa ?? searchParams.table);
   const tableNumber = Number.isInteger(mesa) && mesa >= 1 && mesa <= 999 ? mesa : null;
   const source = ['qr', 'nfc_dynamic', 'direct', 'link'].includes(searchParams.src ?? '') ? searchParams.src! : 'qr';
 
