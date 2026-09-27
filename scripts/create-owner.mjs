@@ -1,6 +1,6 @@
 // Crea el usuario Owner inicial de la empresa (una sola vez, tras correr las migraciones).
 //
-//   npm run create-owner -- owner@tu-dominio.pe "Nombre Apellido"
+//   npm run create-owner -- owner@tu-dominio.pe Nombre Apellido
 //
 // Lee NEXT_PUBLIC_SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY de .env.local.
 // Genera una contraseña temporal aleatoria y la muestra UNA vez: cámbiala al ingresar
@@ -20,9 +20,13 @@ function loadEnv(file) {
 loadEnv('.env.local');
 loadEnv('.env');
 
-const [email, fullName = 'Owner', companyName = 'Frutal Fast Fruit'] = process.argv.slice(2);
+// En Windows npm puede perder las comillas y partir "Diego Espejo" en dos
+// argumentos: todo lo que sigue al email se une como nombre completo.
+const [email, ...nameParts] = process.argv.slice(2);
+const fullName = nameParts.join(' ').trim() || 'Owner';
+const companyName = process.env.COMPANY_NAME || 'Frutal Fast Fruit';
 if (!email || !email.includes('@')) {
-  console.error('Uso: npm run create-owner -- <email> "<Nombre completo>" ["<Empresa>"]');
+  console.error('Uso: npm run create-owner -- <email> <Nombre completo>   (empresa: variable COMPANY_NAME)');
   process.exit(1);
 }
 
